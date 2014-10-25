@@ -133,6 +133,10 @@ namespace EuclideanAlgorithm
 
         public static ulong getGCDSub(ulong a, ulong b)
         {
+
+         
+
+
             if (a == 0)
                 return b;
 
@@ -169,25 +173,28 @@ namespace EuclideanAlgorithm
                                
 
                 Stopwatch timer = new Stopwatch();   //other way to initialize: Stopwatch timer = Stopwatch.StartNew();
-
+                String mode = "";
                 for (int i = 0; i < numOfLoops; i++)
                 {
                     timer.Reset();
                     timer.Start();
                     ulong _a = randomListA[i];
                     ulong _b = randomListB[i];
-
+                    
 
                     switch (comboBox_Method.SelectedIndex)
                     {
                         case 0:
                             getGCDSub(_a, _b);
+                            mode = "Subtraction";
                             break;
                         case 1:
                             getGCDMod(_a, _b);
+                            mode = "Modulo";
                             break;
                         case 2:
                             getGCDPrimeFactorization(_a, _b);
+                            mode = "PrimeFactors";
                             break;
                         default:
                             return;
@@ -206,18 +213,26 @@ namespace EuclideanAlgorithm
                 textBox_Results.AppendText("\r\n Mean CPU-time(ticks):" + meanCPUTicks);
                 textBox_Results.AppendText("\r\n Standard Deviation CPU-time(ticks):" + standardDeviationCPUTicks);
 
+
                 //Get Median
-                //ToDo: your implementation
+                long median = getMedian(listCPUTimes);
 
                 //Get Histogram            
-                //ToDo: your implementation
-                long startHisto = 0; //get min value
-                long endHisto = 0; //get max value
+                
+                long startHisto = getMin(listCPUTimes); //get min value
+                long endHisto = getMax(listCPUTimes); //get max value
+
+                chart1.ChartAreas[0].AxisX.Maximum = numOfLoops;
+                chart1.ChartAreas[0].AxisY.Minimum = startHisto;
+
+                chart1.Series[0].LegendText = "CPUTickets\nvs\n(a + b)/2";
 
                 List<int> histo = getHistogram(startHisto, endHisto, listCPUTimes);
 
                 //Get Mode
-                //ToDo: your implementation
+            
+                chart1.Titles.Clear();
+                chart1.Titles.Add(mode);
 
 
 
@@ -229,8 +244,15 @@ namespace EuclideanAlgorithm
 
                 //add data to chart
                 chart1.Series[0].Points.Clear();
+                for (int i = 0; i < numOfLoops; i++)
+                {
+                    ulong x = (randomListA[i] + randomListB[i]) / 2;
+                    long y = listCPUTimes[i];
+                    double[] values = {Convert.ToDouble(x), Convert.ToDouble(y)};
+                    chart1.Series[0].Points.Add(values);
 
-                //ToDo: your implementation
+                }
+                
                 double cpuTicksHistoCounter = 0;
 
                 foreach (double probCPUTicks in histoNormalized)
@@ -256,6 +278,43 @@ namespace EuclideanAlgorithm
             }
         }
 
+        private static long getMax(List<long> listCPUTimes)
+        {
+            long max = 0;
+            foreach (long t in listCPUTimes)
+            {
+                if (t > max)
+                {
+                    max = t;
+                }
+            }
+            return max;
+        }
+
+        private static long getMin(List<long> listCPUTimes)
+        {
+            long min = long.MaxValue;
+            foreach (long t in listCPUTimes)
+            {
+                if (t < min)
+                {
+                    min = t;
+                }
+            }
+            return min;
+        }
+
+
+        private static long getMedian(List<long> listCPUTimes)
+        {
+            long d = 0;
+            foreach (long t in listCPUTimes)
+            {
+                d += t;
+            }
+            return d / listCPUTimes.Count;
+
+        }
 
         public static double getMean(List<long> resultset)
         {
@@ -307,12 +366,15 @@ namespace EuclideanAlgorithm
 
         public static double[] getNormalizedHistogram(double start, double end, List<long> data)
         {
-			//ToDo: your implementation
+                    
             int num_bins = (int)Math.Round(Math.Sqrt(data.Count));
 
             double[] histo = new double[num_bins];
 
+           
             
+
+
             return histo;
         }
 
