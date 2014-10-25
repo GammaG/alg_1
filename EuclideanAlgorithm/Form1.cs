@@ -155,12 +155,18 @@ namespace EuclideanAlgorithm
         {
             try
             {
-                ulong l_a = Convert.ToUInt64(numericUpDown_a.Value);
-                ulong l_b = Convert.ToUInt64(numericUpDown_b.Value);
+                int a = Convert.ToInt32(numericUpDown_a.Value);
+                int b = Convert.ToInt32(numericUpDown_b.Value);
+                int numOfLoops = (int)numericUpDown_loops.Value;
+                
+                ulong l_a = Convert.ToUInt64(a);
+                ulong l_b = Convert.ToUInt64(b);
+
+                List<ulong> randomListA = genRandomList(a, b, numOfLoops);
+                List<ulong> randomListB = genRandomList(a, b, numOfLoops);
 
                 List<long> listCPUTimes = new List<long>();
-
-                int numOfLoops = (int)numericUpDown_loops.Value;
+                               
 
                 Stopwatch timer = new Stopwatch();   //other way to initialize: Stopwatch timer = Stopwatch.StartNew();
 
@@ -168,14 +174,20 @@ namespace EuclideanAlgorithm
                 {
                     timer.Reset();
                     timer.Start();
+                    ulong _a = randomListA[i];
+                    ulong _b = randomListB[i];
+
 
                     switch (comboBox_Method.SelectedIndex)
                     {
                         case 0:
-                            getGCDSub(l_a, l_b);
+                            getGCDSub(_a, _b);
                             break;
                         case 1:
-                            getGCDMod(l_a, l_b);
+                            getGCDMod(_a, _b);
+                            break;
+                        case 2:
+                            getGCDPrimeFactorization(_a, _b);
                             break;
                         default:
                             return;
@@ -230,24 +242,46 @@ namespace EuclideanAlgorithm
                     //ToDo: your implementation
                 }
             }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                textBox_Results.AppendText(ex.Message);
+                
+            }
+
             catch (Exception ex)
             {
                 textBox_Results.AppendText("Your input is wasn't valid!");
                 Console.WriteLine(ex);
+                
             }
         }
 
 
         public static double getMean(List<long> resultset)
         {
-            //ToDo: your implementation
-			return 0;
+            ulong number = Convert.ToUInt64(resultset.Count);
+            ulong x = 0;
+            foreach (ulong time in resultset)
+            {
+                x += time;
+            }
+
+			return x/number;
         }
 
         public static double getVariance(List<long> resultSet)
         {
-            //ToDo: your implementation
-			return 0;
+            ulong maxValue = 0;
+            ulong secondValue = 0;
+
+            foreach (ulong t1 in resultSet){
+                if(t1 > maxValue){
+                    secondValue = maxValue;
+                    maxValue = t1;
+                }
+            }
+
+			return maxValue-secondValue;
         }
 
         public static List<int> getHistogram(double start, double end, List<long> data)
@@ -260,13 +294,13 @@ namespace EuclideanAlgorithm
             return histo;
         }
 
-        public static List<int> genRandomList(int min, int max, int count)
+        public static List<ulong> genRandomList(int min, int max, int count)
         {
-            List<int> randomList = new List<int>();
+            List<ulong> randomList = new List<ulong>();
             Random random = new Random();
             for (int i = 0; i < count; ++i)
             {
-                randomList.Add(random.Next(min, max + 1));
+                randomList.Add(Convert.ToUInt64( random.Next(min, max + 1)));
             }
             return randomList;
         }
@@ -280,6 +314,11 @@ namespace EuclideanAlgorithm
 
             
             return histo;
+        }
+
+        private void numericUpDown_b_ValueChanged(object sender, EventArgs e)
+        {
+
         }
 
        
