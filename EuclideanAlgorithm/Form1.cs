@@ -9,18 +9,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace EuclideanAlgorithm
 {
     public partial class Form1 : Form
     {
         public static int numIterations;
+        Boolean alternativeDiagramm = true;
+        Boolean clearDiagramm = false;
 
         public Form1()
         {
             InitializeComponent();
 
             comboBox_Method.SelectedIndex = 0;  //Sub
+            diagramComboBox.SelectedIndex = 0;
         }
 
         private void button_getGCD_Click(object sender, EventArgs e)
@@ -55,6 +59,9 @@ namespace EuclideanAlgorithm
                     default:
                         return;
                 }
+
+
+               
 
                 timer.Stop();
 
@@ -170,12 +177,13 @@ namespace EuclideanAlgorithm
                 List<ulong> randomListB = genRandomList(a, b, numOfLoops);
 
                 List<long> listCPUTimes = new List<long>();
-                               
-
+                List<int> stepList = new List<int>();
+                numIterations = 0;
                 Stopwatch timer = new Stopwatch();   //other way to initialize: Stopwatch timer = Stopwatch.StartNew();
                 String mode = "";
                 for (int i = 0; i < numOfLoops; i++)
                 {
+
                     timer.Reset();
                     timer.Start();
                     ulong _a = randomListA[i];
@@ -202,9 +210,29 @@ namespace EuclideanAlgorithm
 
                     timer.Stop();
                     listCPUTimes.Add(timer.ElapsedTicks);
-                    textBox_Results.AppendText("\r\n Iteration " + i.ToString() + ", CPU-time(ticks):" + timer.ElapsedTicks);
+                    stepList.Add(numIterations);
+                    textBox_Results.AppendText("\r\n Iteration " + i.ToString() + ", CPU-time(ticks):" + timer.ElapsedTicks + ", Steps:" +  numIterations);
                 }
 
+
+                
+                switch (diagramComboBox.SelectedIndex)
+                {
+                    case 0:
+                     
+                        alternativeDiagramm = true;
+                        break;
+                    case 1:
+                       
+                        alternativeDiagramm = false;
+                        break;
+
+                    default:
+                        return;
+                }
+
+
+//                List<ulong> factorList = generateFactors(randomListA, randomListB);
                 //Get Mean and SD
                 double meanCPUTicks = getMean(listCPUTimes);
                 double varianceCPUTicks = getVariance(listCPUTimes);
@@ -215,68 +243,116 @@ namespace EuclideanAlgorithm
 
 
                 //Get Median
-                long median = getMedian(listCPUTimes);
+                //long median = getMedian(listCPUTimes);
 
                 //Get Histogram            
                 
-                long startHisto = getMin(listCPUTimes); //get min value
-                long endHisto = getMax(listCPUTimes); //get max value
+                //long startHisto = getMin(listCPUTimes); //get min value
+                //long endHisto = getMax(listCPUTimes); //get max value
 
-                chart1.ChartAreas[0].AxisX.Maximum = numOfLoops;
-                chart1.ChartAreas[0].AxisY.Minimum = startHisto;
+                //chart1.ChartAreas[0].AxisX.Maximum = numOfLoops;
+                //chart1.ChartAreas[0].AxisY.Minimum = startHisto;
 
-                chart1.Series[0].LegendText = "CPUTickets\nvs\n(a + b)/2";
-
-                List<int> histo = getHistogram(startHisto, endHisto, listCPUTimes);
+                
+               // List<int> histo = getHistogram(startHisto, endHisto, listCPUTimes);
 
                 //Get Mode
             
-                chart1.Titles.Clear();
-                chart1.Titles.Add(mode);
+                //chart1.Titles.Clear();
+                //chart1.Titles.Add(mode);
 
 
 
                 //show normalized histogram, probability density of CPU-time (ticks)
-                double[] histoNormalized = getNormalizedHistogram(startHisto, endHisto, listCPUTimes);
-                textBox_Results.AppendText("\r\n Normalized histogram:");
-                for (int i = 0; i < histoNormalized.Count(); i++)
-                    textBox_Results.AppendText("\r\n" + i.ToString() + ": " + histoNormalized[i]);
+                //double[] histoNormalized = getNormalizedHistogram(startHisto, endHisto, listCPUTimes);
+                //textBox_Results.AppendText("\r\n Normalized histogram:");
+                //for (int i = 0; i < histoNormalized.Count(); i++)
+                //   textBox_Results.AppendText("\r\n" + i.ToString() + ": " + histoNormalized[i]);
+
+                
+
 
                 //add data to chart
-                chart1.Series[0].Points.Clear();
+                String name = "StandardDeviation for\n"+mode;
+
+                if (!chart1.Series.IsUniqueName(mode) & alternativeDiagramm)
+                {
+                    chart1.Series.Remove(chart1.Series[mode]);
+                    chart1.Series.Remove(chart1.Series[name]);
+                }
+                else if (!chart1.Series.IsUniqueName(mode))
+                {
+                    chart1.Series.Remove(chart1.Series[mode]);
+                }
+
+                if (clearDiagramm)
+                {
+                    chart1.Series.Clear();
+                }
+
+                chart1.Series.Add(mode);
+               
+                chart1.Series[mode].ChartType = SeriesChartType.Point;
+               
                 for (int i = 0; i < numOfLoops; i++)
                 {
-                    ulong x = (randomListA[i] + randomListB[i]) / 2;
-                    long y = listCPUTimes[i];
-                    double[] values = {Convert.ToDouble(x), Convert.ToDouble(y)};
-                    chart1.Series[0].Points.Add(values);
-
-                }
+                    ulong x = (randomListA[i]+randomListB[i])/2;
+                  
+                    long y;
+                    if (alternativeDiagramm)
+                        y = listCPUTimes[i];
+                    else
+                        y = stepList[i];
+                    chart1.Series[mode].Points.AddXY(Convert.ToInt32(x),y);
                 
-                double cpuTicksHistoCounter = 0;
-
-                foreach (double probCPUTicks in histoNormalized)
+                }
+                if (alternativeDiagramm)
                 {
+                    chart1.Series.Add(name);
+                    chart1.Series[name].ChartType = SeriesChartType.ErrorBar;
+                    chart1.Series[name]["ErrorBarSeries"] = mode + ":Y1";
+                    chart1.Series[name]["ErrorBarType"] = "StandardDeviation";
+                }
+
+                clearDiagramm = false;
+                
+             //   double cpuTicksHistoCounter = 0;
+
+              //  foreach (double probCPUTicks in histoNormalized)
+              //  {
                     //add datapoint X,Y to chart
-                    chart1.Series[0].Points.AddXY(cpuTicksHistoCounter, probCPUTicks);
+//                    chart1.Series[0].Points.AddXY(cpuTicksHistoCounter, probCPUTicks);
 
                     //compute next counter
                     //ToDo: your implementation
-                }
+  //              }
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                textBox_Results.AppendText(ex.Message);
+                textBox_Results.AppendText("\n"+ex.Message);
                 
             }
 
             catch (Exception ex)
             {
-                textBox_Results.AppendText("Your input is wasn't valid!");
-                Console.WriteLine(ex);
+                textBox_Results.AppendText("\nYour input is wasn't valid!");
+                Console.WriteLine("\n"+ex);
                 
             }
         }
+
+        private static List<ulong> generateFactors(List<ulong> a, List<ulong> b){
+            List<ulong> list = new List<ulong>();
+            for(int i= 0; i < a.Count; i++){
+
+                list[i] = (a[i] + b[i]) / 2;
+            }
+
+            return list;
+        }
+        
+
+        
 
         private static long getMax(List<long> listCPUTimes)
         {
@@ -381,6 +457,11 @@ namespace EuclideanAlgorithm
         private void numericUpDown_b_ValueChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void diagramComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            clearDiagramm = true;
         }
 
        
