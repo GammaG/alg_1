@@ -232,7 +232,7 @@ namespace EuclideanAlgorithm
                 }
 
 
-//                List<ulong> factorList = generateFactors(randomListA, randomListB);
+
                 //Get Mean and SD
                 double meanCPUTicks = getMean(listCPUTimes);
                 double varianceCPUTicks = getVariance(listCPUTimes);
@@ -242,38 +242,14 @@ namespace EuclideanAlgorithm
                 textBox_Results.AppendText("\r\n Standard Deviation CPU-time(ticks):" + standardDeviationCPUTicks);
 
 
-                //Get Median
-                //long median = getMedian(listCPUTimes);
-
-                //Get Histogram            
-                
-                //long startHisto = getMin(listCPUTimes); //get min value
-                //long endHisto = getMax(listCPUTimes); //get max value
-
-                //chart1.ChartAreas[0].AxisX.Maximum = numOfLoops;
-                //chart1.ChartAreas[0].AxisY.Minimum = startHisto;
-
-                
-               // List<int> histo = getHistogram(startHisto, endHisto, listCPUTimes);
-
-                //Get Mode
-            
-                //chart1.Titles.Clear();
-                //chart1.Titles.Add(mode);
-
-
-
-                //show normalized histogram, probability density of CPU-time (ticks)
-                //double[] histoNormalized = getNormalizedHistogram(startHisto, endHisto, listCPUTimes);
-                //textBox_Results.AppendText("\r\n Normalized histogram:");
-                //for (int i = 0; i < histoNormalized.Count(); i++)
-                //   textBox_Results.AppendText("\r\n" + i.ToString() + ": " + histoNormalized[i]);
-
-                
-
-
                 //add data to chart
                 String name = "StandardDeviation for\n"+mode;
+
+                if (clearDiagramm)
+                {
+                    chart1.Series.Clear();
+                }
+
 
                 if (!chart1.Series.IsUniqueName(mode) & alternativeDiagramm)
                 {
@@ -285,11 +261,7 @@ namespace EuclideanAlgorithm
                     chart1.Series.Remove(chart1.Series[mode]);
                 }
 
-                if (clearDiagramm)
-                {
-                    chart1.Series.Clear();
-                }
-
+        
                 chart1.Series.Add(mode);
                
                 chart1.Series[mode].ChartType = SeriesChartType.Point;
@@ -316,16 +288,6 @@ namespace EuclideanAlgorithm
 
                 clearDiagramm = false;
                 
-             //   double cpuTicksHistoCounter = 0;
-
-              //  foreach (double probCPUTicks in histoNormalized)
-              //  {
-                    //add datapoint X,Y to chart
-//                    chart1.Series[0].Points.AddXY(cpuTicksHistoCounter, probCPUTicks);
-
-                    //compute next counter
-                    //ToDo: your implementation
-  //              }
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -464,7 +426,12 @@ namespace EuclideanAlgorithm
             clearDiagramm = true;
         }
 
-       
+        private void clearD_Click(object sender, EventArgs e)
+        {
+            chart1.Series.Clear();
+     
 
-    }
+        }
+
+     }
 }

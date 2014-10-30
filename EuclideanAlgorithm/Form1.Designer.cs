@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.numericUpDown_a = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown_b = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -44,6 +44,7 @@
             this.button_getGCD = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.diagramComboBox = new System.Windows.Forms.ComboBox();
+            this.clearD = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_a)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_b)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_loops)).BeginInit();
@@ -196,16 +197,16 @@
             // 
             // chart1
             // 
-            chartArea4.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chart1.Legends.Add(legend4);
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(369, 15);
             this.chart1.Name = "chart1";
-            series4.ChartArea = "ChartArea1";
-            series4.Legend = "Legend1";
-            series4.Name = "Series1";
-            this.chart1.Series.Add(series4);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(757, 593);
             this.chart1.TabIndex = 13;
             this.chart1.Text = "chart1";
@@ -218,15 +219,26 @@
             "Steps vs (a+b)/2"});
             this.diagramComboBox.Location = new System.Drawing.Point(65, 124);
             this.diagramComboBox.Name = "diagramComboBox";
-            this.diagramComboBox.Size = new System.Drawing.Size(184, 21);
+            this.diagramComboBox.Size = new System.Drawing.Size(152, 21);
             this.diagramComboBox.TabIndex = 14;
             this.diagramComboBox.SelectedIndexChanged += new System.EventHandler(this.diagramComboBox_SelectedIndexChanged);
+            // 
+            // clearD
+            // 
+            this.clearD.Location = new System.Drawing.Point(233, 124);
+            this.clearD.Name = "clearD";
+            this.clearD.Size = new System.Drawing.Size(91, 23);
+            this.clearD.TabIndex = 15;
+            this.clearD.Text = "Clear Diagram";
+            this.clearD.UseVisualStyleBackColor = true;
+            this.clearD.Click += new System.EventHandler(this.clearD_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1138, 645);
+            this.Controls.Add(this.clearD);
             this.Controls.Add(this.diagramComboBox);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.button_getGCD);
@@ -266,6 +278,7 @@
         private System.Windows.Forms.Button button_getGCD;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.ComboBox diagramComboBox;
+        private System.Windows.Forms.Button clearD;
     }
 }
 
