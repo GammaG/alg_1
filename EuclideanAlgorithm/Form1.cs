@@ -178,12 +178,12 @@ namespace EuclideanAlgorithm
 
                 List<long> listCPUTimes = new List<long>();
                 List<int> stepList = new List<int>();
-                numIterations = 0;
+               
                 Stopwatch timer = new Stopwatch();   //other way to initialize: Stopwatch timer = Stopwatch.StartNew();
                 String mode = "";
                 for (int i = 0; i < numOfLoops; i++)
                 {
-
+                    numIterations = 0;
                     timer.Reset();
                     timer.Start();
                     ulong _a = randomListA[i];
